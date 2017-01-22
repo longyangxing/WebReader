@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta content="telephone=no" name="format-detection">
+	<link rel="stylesheet" href="styles/reset.css">
+	<title>reader</title>
+	<style>
+
+		html {
+			width: 100%;
+		/*	height: 100px;
+			overflow: hidden;*/
+		}
+		
+		body {
+			width: 100%;
+			text-align: left;
+			/*overflow: hidden;*/
+			background: #f7eee5;
+		}
+
+		/*返回书架导航样式*/
+		.nav-top {
+			width: 100%;
+			height: 50px;
+			background-color: #000;
+			position: fixed;
+			top: 0;	
+			left: 0;
+			/*display: none;*/
+		}
+
+		.nav-top .icon-back {
+			width: 23px;
+			height: 23px;
+			position: absolute;
+			left: 10px;
+			top: 14px;
+			background: url(images/back.png) 0 0 no-repeat;
+            background-size: contain;
+		}
+		.nav-top .back {
+			position: absolute;
+			top: 16px;
+			left: 42px;
+			color: #d5d5d5;
+		}
+		/*返回书架导航样式结束*/
+
+
+		/*中间控制栏样式*/
+		.show-tab-controller {
+			width: 100%;
+			height: 40%;
+			position: fixed;
+			top: 40%;
+		}
+
+		/*//文本内容样式*/
+		.fiction-container {
+			padding: 15px;
+			color: #555;
+			line-height: 31px;
+			font-size: 14px;
+		}
+
+		.fiction-container h4 {
+			font-size: 20px;
+			color: #736357;
+			border-bottom: 1px solid #736357;
+			margin-bottom: 1em; 
+			letter-spacing: 2px;
+		}
+
+		.fiction-container p {
+			text-indent: 2em;
+			margin: 0.5em 0;
+			line-height: 24px;
+		}
+
+		/*底部换页栏样式*/
+		.paging {
+			width: 70%;
+			max-width: 800px;	
+			margin: 0 auto;
+		}
+		
+		.paging .tab {
+			height: 34px;
+			line-height: 34px;
+			background-color: #000;
+			border-radius: 8px;
+		}
+		
+		.paging li {
+			display: inline-block;
+			width: 49%;
+			text-align: center;
+			color: #fff;
+			border-right: 1px solid #858382;
+		}
+
+		.paging li:nth-child(2){
+			border: none;
+		}
+
+
+		/*底部控制栏样式*/
+		.nav-bottom {
+			width: 100%;
+			height: 70px;
+			position: fixed;
+			bottom: 0;
+			background-color: #000;
+			opacity: 0.9;
+			text-align: center;
+		}
+
+		.nav-bottom .item {
+			width: 33%;
+			display: inline-block;
+		}
+		.nav-bottom .item-wrap {
+			margin: 0 auto;
+			width: 26px;
+			position: relative;
+		}
+
+		.nav-bottom .icon {
+			position: absolute;
+			top: 3px;
+			left: 2px;
+			width: 18px;
+			height: 13px;
+			/*background-color: red;*/
+		}
+		
+		.nav-bottom .icon-menu {
+			background: url(images/menu.png) 0 0 no-repeat;
+			background-size: contain;
+		}
+
+		.nav-bottom .icon-font {
+			background: url(images/font.png) 0 0 no-repeat;
+			background-size: contain;
+		}
+		
+		.nav-bottom .icon-day-mod {
+			background: url(images/day-mod.png) 0 0 no-repeat;
+			background-size: contain;
+		}
+		
+		.nav-bottom .icon-night-mod {
+			background: url(images/night-mod.png) 0 0 no-repeat;
+			background-size: contain;
+		}
+
+		.nav-bottom .active {
+			background: url(images/font-active.png) 0 0 no-repeat;
+			background-size: contain;
+		}
+
+		.nav-bottom .icon-text {
+			position: absolute;
+			top: 25px;
+			font-size: 10px;
+			color: #fff;
+		}
+
+		/*底部浮出控制栏样式*/
+		.control-panel {
+			width: 100%;
+			height: 135px;
+			background-color: #000;
+			opacity: 0.9;
+			position: fixed;
+			bottom: 70px;
+		}
+
+		.control-panel .controller {
+			margin: 15px;
+			padding: 5px 10px;
+		}
+
+		.control-panel .controller span {
+			display: inline-block;
+			padding-right: 20px;
+			padding-left: 10px; 
+			color: #fff;
+		}
+
+		.control-panel .btn {
+			border: 1px solid #8c8c8c;
+			padding: 5px 40px;
+			color: #fff;
+			margin-right: 10px;
+			border-radius: 16px;
+		}
+
+		.control-panel .bg-container {
+			width: 30px;
+			height: 30px;
+			display: inline-block;
+			vertical-align: middle;
+			border-radius: 15px;
+			margin-left: 7px;
+			background: #fff;
+			position: relative;
+		}
+
+		.control-panel .bg-container-white {
+			background-color: #f7eee5;
+		}
+		
+		.control-panel .bg-container-paple {
+			background-color: #e9dfc7;
+		}
+
+		.control-panel .bg-container-grey {
+			background-color: #a4a4a4;
+		}
+
+		.control-panel .bg-container-green {
+			background-color: #cdefce;
+		}
+
+		.control-panel .bg-container-blue {
+			background-color: #283548;
+		}
+
+		/*背景颜色选择后样式*/
+		.control-panel .container-current {
+			width: 32px;
+			height: 32px;
+			border-radius: 16px;
+			border: 1px solid #ff7800;
+			position: absolute;
+			left: -2px;
+			top: -2px; 
+		}
+
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div class="nav-top">
+			<div class="icon-back"></div>
+			<div class="back">返回书架</div>
+		</div>
+		<div class="show-tab-controller"></div>
+		<div class="fiction-container">
+			<h4>第004章 绝处逢生？</h4>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。
+			从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+			<p>从朱莉家出来后，盛夏在招待所将就了一夜。闺蜜小雅想让盛夏住她家去，但盛夏没同意。</p>
+		</div>
+		<div class="paging">
+			<ul class="tab">
+				<li class="prev">上一页</li>
+				<li class="next">下一页	</li>
+			</ul>
+		</div>
+		<div class="nav-bottom">
+			<div class="item">
+				<div class="item-wrap">
+					<div class="icon icon-menu"></div>
+					<div class="icon-text">目录</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="item-wrap">
+					<div class="icon icon-font"></div>
+					<div class="icon-text">字体</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="item-wrap">
+					<div class="day-icon" >
+						<div class="icon icon-day-mod"></div>
+						<div class="icon-text">白天</div>
+					</div>
+					<div class="night-icon" style="display: none;">
+						<div class="icon icon-night-mod"></div>
+						<div class="icon-text">夜间</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="control-panel">
+			<div class="controller">
+				<span>字号</span>
+				<input type="button" value="大" id="upper" class="btn">
+				<input type="button" value="小" id="lower" class="btn">
+			</div>
+			<div class="controller">
+				<span>背景</span>
+				<div id="day-mod" class="bg-container bg-container-white" data-background="#f7eee5">
+					<div class="container-current"></div>
+				</div>
+				<div class="bg-container bg-container-paple" data-background="#e9dfc7">
+					<div class="container-current" style="display: none;"></div>
+				</div>
+				<div class="bg-container bg-container-grey" data-background="#a4a4a4">
+					<div class="container-current" style="display: none;"></div>
+				</div>
+				<div class="bg-container bg-container-green" data-background="#cdefce">
+					<div class="container-current" style="display: none;"></div>
+				</div>
+				<div id="night-mod" class="bg-container bg-container-blue" data-background="#283548">
+					<div class="container-current" style="display: none;"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
