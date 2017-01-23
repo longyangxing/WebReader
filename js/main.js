@@ -17,6 +17,9 @@
 	var $prev_page = $('#prev-page');
 	var $next_page = $('#next-page');
 
+    var renderUI;
+    var rederModel;
+
 	// 封装本地存储和jsonp方法
     var Util = (function(){
     		// var profix = 'profix';
@@ -36,6 +39,7 @@
     			$.jsonp({
     				url : url,
     				cache : true,
+                    callback: 'duokan_fiction_chapter',
     				success : function( result ){
     					var data = $.base64.decode(result);
                         var json = decodeURIComponent(escape(data));
@@ -82,14 +86,86 @@
 
     //获取数据
     function RenderModel(){
-    	var charterId;
-    	var charterTotal; 
-    	function 
+    	var ChapterId;
+
+        // 初始化数据
+        var init = function( callback ){
+            getChapterInfo(function(){
+                getChapterContent( ChapterId , function( data ){
+                    callback && callback( data )
+
+                })
+            })
+        }
+
+        //获取章节信息
+    	var getChapterInfo = function( callback ){
+            ChapterId = Util.getStorage( 'last-chapter-id' );
+            // console.log(ChapterId)
+            $.get( 'data/chapter.json' , function( data ){
+                // alert(ChapterId)
+                if( ChapterId === undefined ){
+                    ChapterId = data.chapters[0].chapter_id;
+                    Util.setStorage( 'last-chapter-id' , ChapterId )
+                    callback && callback();
+                }else{
+                    callback && callback();
+                }
+            })
+        }
+
+        //获取章节内容
+        var getChapterContent = function( chapterId , callback ){
+            // alert()
+            $.get( 'data/data'+ chapterId +'.json' , function( data ){
+                var url = data.jsonp;
+                console.log( chapterId )
+                Util.getJSONP( url ,function( data ){
+                    callback && callback( data );
+                    // console.log( data )   
+                })
+            })
+        }
+
+        //获取前一章内容
+        var getPrevChapter = function( callback ){
+            ChapterId = parseInt( ChapterId );
+            // console.log(ChapterId)
+            if( ChapterId <= 0 ){
+                alert("已经是第一章内容");
+            }else{
+                ChapterId -= 1;
+                Util.setStorage( 'last-chapter-id' , ChapterId );
+                getChapterContent( ChapterId , callback );
+            }
+        }
+
+        var getNextChapter = function ( callback ){
+            ChapterId = parseInt( ChapterId );
+            // console.log(ChapterId)
+            if( ChapterId < 3 ){
+                  ChapterId += 1;
+                  Util.setStorage( 'last-chapter-id' , ChapterId );
+                  getChapterContent( ChapterId , callback );
+            }else{
+                alert("已经是最后一章了");
+            }
+          
+        }
+
+        return {
+            init : init,
+            getChapterInfo : getChapterInfo,
+            getChapterContent :getChapterContent,
+            getPrevChapter : getPrevChapter,
+            getNextChapter : getNextChapter
+        }
 
     }
     //渲染数据
     function RenderUI( container ){
     	function parseData( jsonData ){
+            jsonData = $.parseJSON( jsonData );
     		var html = '';
     		html = '<h4>'+jsonData.t+'</h4>';
     		for( var i = 0 ; i < jsonData.p.length ; i++ ){
@@ -145,7 +221,7 @@
     	//改变字体大小
     	$upper.click(function(){
     		var fontSize = parseInt( $fiction_container.css( 'font-size' ) );
-    		if( fontSize < 28 ){
+    		if( fontSize < 20 ){
     			fontSize++;
     			$fiction_container.css( 'font-size' , fontSize );
     			Util.setStorage( 'font-size' , fontSize );
@@ -186,16 +262,40 @@
 
     	// 切换页面
     	$prev_page.click(function(){
-    		// render()
-    		alert()
+    		rederModel.getPrevChapter(function( data ){
+                renderUI(data);
+            })
     	});
     	$next_page.click(function(){
-    		// render()
-    		alert()
-    	})
+    		rederModel.getNextChapter(function( data ){
+                renderUI(data);
+            })
+    	});
+
+        // 页面滚动
+        $(window).scroll(function(){
+             $nav_top.css( 'display' , 'none' );
+             $nav_bottom.css( 'display' , 'none' );
+             $control_panel.css( 'display' , 'none' );
+        })
 
     }
+    // 入口函数
+    function app(){
+        rederModel = RenderModel();
+        renderUI = RenderUI( $fiction_container );
+        rederModel.init( renderUI );
+        eventHandler();  
+    }
 
-    // 测试
-    eventHandler()
+    app();
+
+    // // 测试
+    
+    // var rederModel = RenderModel();
+    // var renderUI = RenderUI( $fiction_container )
+    // rederModel.getChapterInfo();
+    // // rederModel.getChapterContent( 1 )
+    // rederModel.getChapterContent( 1 , renderUI )
+    // eventHandler()  
 })()
