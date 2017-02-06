@@ -119,7 +119,7 @@
             // alert()
             $.get( 'data/data'+ chapterId +'.json' , function( data ){
                 var url = data.jsonp;
-                console.log( chapterId )
+                // console.log( chapterId )
                 Util.getJSONP( url ,function( data ){
                     callback && callback( data );
                     // console.log( data )   
